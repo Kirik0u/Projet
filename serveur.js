@@ -2,11 +2,11 @@ var http = require('https');
     fs = require('fs');
 
 var options = {
-  key: fs.readFileSync('/home/florian/Desktop/Projet/server.key'),
-  cert: fs.readFileSync('/home/florian/Desktop/Projet/server.csr')
+  key: fs.readFileSync('/home/florian/Desktop/Projet/key.pem'),
+  cert: fs.readFileSync('/home/florian/Desktop/Projet/cert.pem')
 };
 
-fs.readFile(',/index.html', function(err, html){
+fs.readFile('./index.html', function(err, html){
 	if(err){
 		throw err;
 	}
@@ -14,7 +14,5 @@ fs.readFile(',/index.html', function(err, html){
   		res.writeHead(200);
 		res.write(html);
   		res.end('Salut tout le monde !');
-	}
+	}).listen(8000);
 });
-
-server.listen(8000);
