@@ -2,8 +2,8 @@ var http = require('https');
     fs = require('fs');
 
 var options = {
-  key: fs.readFileSync('/home/florian/Desktop/Projet/key.pem'),
-  cert: fs.readFileSync('/home/florian/Desktop/Projet/cert.pem')
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./server.crt')
 };
 
 fs.readFile('./index.html', function(err, html){
