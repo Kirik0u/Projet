@@ -1,95 +1,54 @@
-<!doctype HTML>
-
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Projet Snake Multijoueur</title>
-		<script type="text/javascript" src="js/paper.js"></script>
+		<script type="text/javascript" src="./paper-full.min.js"></script>
+		<script type="text/paperscript" canvas="myCanvas">
+			var diametreBalle = 20;
+			var posX = Point.random()*view.size;
+			var posY = Point.random()*view.size;
+			
+			for(var i=0; i<=5; i++){
+				var myPoint = new Point(posX-i*diametreBalle/2, posY-i*diametreBalle/2);
+				var myPath = new Path.Circle({
+					center: myPoint,
+					radius: diametreBalle/2,
+					fillColor: 'white'
+				});
+			}
+			var count = 150;
+			var destination = myPoint;
+
+			var pPath;
+			function onMouseUp(event) {
+				pPath = new Path();
+
+				// Add the mouse down position:
+				pPath.add(event.downPoint);
+
+				destination = pPath.position;
+			}
+
+			function onFrame(event) {
+				//var vector = destination - myPath.position;
+				//myPath.position += vector / 50;
+				for (var i = 0; i < count; i++) {
+					var item = project.activeLayer.children[i];
+		
+					// Move the item 1/20th of its width to the right. This way
+					// larger circles move faster than smaller circles:
+					item.position.x += item.bounds.width / 20;
+
+					// If the item has left the view on the right, move it back
+					// to the left:
+					if (item.bounds.left > view.size.width) {
+						item.position.x = -item.bounds.width;
+					}
+				}
+			}
+		</script>
 	</head>
 	<body>
-		<canvas id="monCanvas" width="1280" height="555" style="background-color:black"></canvas>
-		<script type="text/javascript" language="JavaScript" canvas="canvas">
-			window.onload = function()
-			{
-  				var canvas = document.getElementById('monCanvas');
-        			if(!canvas)
-       				{
-            				alert("Impossible de recuperer le canvas");
-            				return;
-				}
-    				var context = canvas.getContext('2d');
-       				if(!context)
-				{
-				    alert("Impossible de recuperer le context du canvas");
-				    return;
-				}
-			    	var diametreBalle = 20;
-			        var posX = 1+diametreBalle/2;
-			        var posY = 1+diametreBalle/2;
-			        var vitesseX = 3;
-			        var vitesseY = 3;
-			        var myInterval = setInterval(animate, 1000/30); //determine le nombre d'images par seconde
-				canvas.addEventListener("click", onclickMouse);
-
-				function onclickMouse(event)
-				{
-					var x = event.clientX;
-  					var y = event.clientY;
-
-					if(posX >= x && posY >= y)
-					{
-						vitesseX *= -1;
-						vitesseY *= -1;
-					}
-					if(posx >= x || posY <= y)
-					{
-						vitesseX *= -1;
-					}
-					if(posX <= x && posY >= y)
-					{
-						vitesseY *= -1;
-					}
-					if(posx <= x || posY <= y)
-					{
-						
-					}
-				}
-
-			        function animate()
-			        {
-					context.clearRect(0, 0, canvas.width, canvas.height);
-	
-					//Tracé de la balle
-					context.fillStyle = "white";
-					context.beginPath();
-					context.arc(posX, posY, diametreBalle/2, 0, Math.PI*2);
-					context.fill();
-	
-					//On va vérifier si la balle à toucher l'un des bords du canvas.
-					/*if(posX+diametreBalle/2 >= canvas.width)//Si on touche le bord droit
-					{
-					    posX=0+diametreBalle/2;//On repart à gauche.
-					}
-					*/if(posX <= 0+diametreBalle/2)//Si on touche le bord gauche
-					{
-					    posX=canvas.width-diametreBalle/2;//On repart à droite.
-					}/*
-
-					if(posY+diametreBalle/2 >= canvas.height)//Si on touche le bord du bas
-					{
-					    posY=0+diametreBalle/2;//On repart en-haut de l'écran.
-					}
-					*/if(posY <= 0+diametreBalle/2)//Si on touche le bord du haut
-					{
-					    posY=canvas.height-diametreBalle/2;//On repart en-bas de l'écran.
-					}
-        
-					//On additionne les vitesses de déplacement avec les positions
-					posX += vitesseX;
-					posY += vitesseY;
-				}
-			}			
-		</script>
+		<canvas id="myCanvas" width="1280" height="555" style="background-color:black" resize></canvas>
 	</body>
 </html>
-
-
