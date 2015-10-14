@@ -4,44 +4,43 @@
                 <title>Projet Snake Multijoueur</title>
 		<script type="text/javascript" src="./paper-full.min.js"></script>
 		<script type="text/paperscript" canvas="myCanvas">
-			// The amount of points in the path:
-			var points = 25;
+			var diametreBalle = 20;
+			var count = 7;
+			var posXTete = Point.random()*view.size;
+			var posYTete = Point.random()*view.size;
+			var posX = [];
+			var posY = [];
+			var myPath = [];
 
-			// The distance between the points:
-			var length = 5;
+			for(var i=0; i<=count; i++){
+				posX[i]=posXTete-i*diametreBalle/2;
+				posY[i]=posYTete-i*diametreBalle/2;
 
-			var path = new Path({
-				strokeColor: 'white',
-				strokeWidth: 20,
-				strokeCap: 'round'
-			});
+ 				var myPoint = new Point(posX[i], posY[i]);
+ 				myPath[i] = new Path.Circle({
+ 					center: myPoint,
+ 					radius: diametreBalle/2,
+ 					fillColor: 'white'
+ 				});
+ 			}
 
-			var start = view.center / [10, 1];
-			for (var i = 0; i < points; i++){
-				path.add(start + new Point(i * length, 0));
-			}
-			
+			var destination = myPoint;
+
+			var pPath;
 			function onMouseDown(event) {
 				pPath = new Path();
-
 				// Add the mouse down position:
 				pPath.add(event.downPoint);
 
 				destination = pPath.position;
-				
-				path.firstSegment.point = event.point;
-				for (var i = 0; i < points - 1; i++) {
-					var segment = path.segments[i];
-					var nextSegment = segment.next;
-					var vector = segment.point - nextSegment.point;
-					vector.length = length;
-					nextSegment.point = segment.point - vector;
-				}
-				path.smooth();
 			}
 
-			function onFrame(event){
-				
+			function onFrame(event) {
+				var vector = destination - myPath[0].position;
+				for(i=count; i>0; i--){
+					myPath[i].position = myPath[i-1].position;
+				}
+				myPath[0].position += vector / 70;
 			}
 		</script>
 	</head>
