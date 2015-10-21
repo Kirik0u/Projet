@@ -2,8 +2,8 @@ var fs = require('fs');
 var https = require('https');
 
 var credentials = {
-	key: fs.readFileSync('./key.pem', 'utf8'),
-	cert: fs.readFileSync('./cert.pem', 'utf8')
+    key: fs.readFileSync('./key.pem', 'utf8'),
+    cert: fs.readFileSync('./cert.pem', 'utf8')
 };
 
 var express = require('express');
@@ -19,21 +19,28 @@ app.use(express.static(__dirname));
 var io = require('socket.io').listen(httpsServer);
 
 // Quand on client se connecte, on le note dans la console
-io.sockets.on('connection', function (socket, pseudo) {
+io.sockets.on('connection', function (socket) {
 
-	socket.on('nouveau_client', function(pseudo) {
-        	socket.pseudo = pseudo;
-        	socket.broadcast.emit('nouveau_client', pseudo);
-		socket.emit('message', 'Vous êtes bien connecté !');
-		socket.broadcast.emit('message', pseudo+' est en ligne !');
-    		console.log(pseudo+' est connecté !');
-    	});
-	
-	socket.on('disconnect', function(pseudo){
-		socket.broadcast.emit('disconnect', pseudo);
-		socket.broadcast.emit('message', pseudo+' est hors-ligne !');
-		console.log(pseudo+' est deconnecté !');
-	});
+	// Start listening for mouse click events
+    socket.on('mouseclick', function (data) {
+        // This line sends the event (broadcasts it)
+        // to everyone except the originating client.
+        socket.broadcast.emit('click', data);
+    });
+
+    socket.on('nouveau_client', function (pseudo) {
+        socket.pseudo = pseudo;
+        socket.broadcast.emit('nouveau_client', pseudo);
+        socket.emit('message', 'Vous êtes bien connecté !');
+        socket.broadcast.emit('message', pseudo + ' est en ligne !');
+        console.log(pseudo + ' est connecté !');
+    });
+    /*socket.on('disconnect', function(pseudo){
+        socket.pseudo = pseudo;
+        socket.broadcast.emit('disconnect', pseudo);
+        socket.broadcast.emit('message', pseudo + ' est hors-ligne !');
+        console.log(pseudo+' est deconnecté !');
+        });*/
 });
 	
 httpsServer.listen(8000);
